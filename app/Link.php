@@ -29,4 +29,11 @@ class Link extends Model
     {
         return $query->where('user_id', $user_id);
     }
+
+    public function scopePublic($query)
+    {
+        return $query->where('private', 0);
+    }
+
+
 }

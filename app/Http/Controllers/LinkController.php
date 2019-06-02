@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Illuminate\Validation\Rule;
 use Jenssegers\Agent\Agent;
 use App\Link;
 use App\Visit;
@@ -11,16 +13,31 @@ class LinkController extends Controller
 {
     public function shorten(Request $request)
     {
-
+        $validator  = Validator::make($request->all(),[
+            'id'      => 'numeric|required|exists:users,id',
+            'type'    => 'string|nullable',
+            'api_key' => [
+                'required',
+                Rule::exists('users')->where(function ($query) use ($request) {
+                    $query->where('id', $request->id);
+                })
+            ],
+            'url'     => 'url|required',
+            'private' => 'boolean|nullable',
+            'code'    => 'unique:links,code|nullable',
+            'title'   => 'string|nullable',
+            'body'    => 'string|nullable',
+        ]);
     }
 
     public function manage($code, $password)
     {
         if ($link = Link::whereCode($code)->first()) {
             if($link->password == $password) {
-                echo "OK";
+                $visits = Visit::ofLink($link->id)->orderBy('created_at', 'desc')->paginate(config('7ul.per-page-visits',10));
+                return view('link.manage', ['link'=>$link, 'visits' => $visits]);
             } else {
-                echo "ddd";
+                return redirect()->route('home');
             }
         } else {
             return redirect()->route('home');
@@ -63,5 +80,21 @@ class LinkController extends Controller
         } else {
             return redirect()->route('home');
         }
+    }
+
+    public function lastLinks()
+    {
+        $links = Link::with(['visits'])->public()->latest()->limit(config('7ul.count-last-links', 5))->get();
+        return response()->json($links,200);
+    }
+
+    public function statistics()
+    {
+        $statistics = [
+           'total_links' =>  Link::count(),
+           'total_users' =>  User::count(),
+           'total_visits' =>  Visit::count(),
+        ];
+        return response()->json($statistics,200);
     }
 }

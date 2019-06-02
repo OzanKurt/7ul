@@ -16,6 +16,7 @@ class CreateLinksTable extends Migration
         Schema::create('links', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('url');
+            $table->boolean('private')->default(false);
             $table->text('domain')->nullable();
             $table->string('title')->nullable();
             $table->string('type')->default('redirect'); //redirect,page,iframe

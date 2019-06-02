@@ -22,4 +22,9 @@ class Visit extends Model
     {
         return $this->belongsTo('App\Link');
     }
+
+    public function scopeOfLink($query, $link_id)
+    {
+        return $query->where('link_id', $link_id);
+    }
 }

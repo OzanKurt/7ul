@@ -22,5 +22,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/manage/{code}/{password}', 'LinkController@manage')->name('manage');
+Route::get('/last-links/', 'LinkController@lastLinks')->name('last-links');
+Route::get('/statistics/', 'LinkController@statistics')->name('statistics');
 Route::get('/{code}', 'LinkController@redirect')->name('redirect');
 

@@ -93,7 +93,7 @@
                 <span class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="links">
-                            <a href="#api">API</a> | <a href="#api">TOS</a> | <a href="#api">Last Links</a> | <a href="#api">Search</a> |  <a href="#api">Powered By ShirazSoft.com</a>
+                            <a href="#api">API</a> | <a href="#api">TOS</a> | <a href="#api">Search</a> |  <a href="#api">Powered By ShirazSoft.com</a>
                         </div>
                     </div>
 

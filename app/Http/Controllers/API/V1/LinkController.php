@@ -25,6 +25,7 @@ class LinkController extends Controller
                 })
             ],
             'url'     => 'url|required',
+            'private' => 'boolean|nullable',
             'code'    => 'unique:links,code|nullable',
             'title'   => 'string|nullable',
             'body'    => 'string|nullable',
@@ -33,7 +34,6 @@ class LinkController extends Controller
         if ($validator->fails()) {
             return response()->json(['code' => 0, 'errors' => $validator->messages()], 200);
         } else {
-
             if($link = Link::ofUser($request->id)->where('url',$request->url)->first()) {
                 return response()->json(['code' => 1, 'link' => ['password' => $link->password, 'short_url' => $link->domain . $link->code  ,'new' => 'no']], 200);
             } else {
@@ -45,6 +45,9 @@ class LinkController extends Controller
                 $link->domain = config('7ul.domain');
                 if($request->code) {
                     $link->code = $request->code;
+                }
+                if($request->private) {
+                    $link->private = $request->private;
                 }
                 if($request->type) {
                     $link->type = $request->type;
@@ -59,7 +62,7 @@ class LinkController extends Controller
 
                 if(!$request->code) {
                     BijectiveShortener::setChars(
-                        config('7ul.characters')
+                        config('7ul.characters','abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
                     );
                     $link->code = BijectiveShortener::makeFromInteger($link->id);
                     $link->save();
@@ -67,7 +70,5 @@ class LinkController extends Controller
                 return response()->json(['code' => 1, 'link' => ['password' => $link->password, 'short_url' => $link->domain . $link->code ,'new' => 'yes']], 200);
             }
         }
-
-
     }
 }
