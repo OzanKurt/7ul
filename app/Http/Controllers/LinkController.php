@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Auth;
 use App\Link;
 use App\Visit;
 use Illuminate\Http\Request;
@@ -13,35 +14,77 @@ class LinkController extends Controller
 {
     public function shorten(Request $request)
     {
-        $validator  = Validator::make($request->all(),[
-            'id'      => 'numeric|required|exists:users,id',
+        $request->validate([
             'type'    => 'string|nullable',
-            'api_key' => [
-                'required',
-                Rule::exists('users')->where(function ($query) use ($request) {
-                    $query->where('id', $request->id);
-                })
-            ],
             'url'     => 'url|required',
             'private' => 'boolean|nullable',
             'code'    => 'unique:links,code|nullable',
             'title'   => 'string|nullable',
             'body'    => 'string|nullable',
         ]);
-    }
-
-    public function manage($code, $password)
-    {
-        if ($link = Link::whereCode($code)->first()) {
-            if($link->password == $password) {
-                $visits = Visit::ofLink($link->id)->orderBy('created_at', 'desc')->paginate(config('7ul.per-page-visits',10));
-                return view('link.manage', ['link'=>$link, 'visits' => $visits]);
+        if (Auth::check()) {
+            if($link = Link::ofUser(Auth::user()->id)->where('url',$request->url)->first()) {
+                return redirect()->route('manage',[$link->code, $link->password]);
             } else {
-                return redirect()->route('home');
+                $link = new Link();
+                $link->url = $request->url;
+                $link->user_id = $request->user()->id;
+                $link->ip = $request->ip();
+                $link->password = Str::random(10);
+                $link->domain = config('7ul.domain');
+                if($request->code) {
+                    $link->code = $request->code;
+                }
+                if($request->private) {
+                    $link->private = $request->private;
+                }
+                if($request->type) {
+                    $link->type = $request->type;
+                }
+                if($request->title) {
+                    $link->title = $request->title;
+                }
+                if($request->body) {
+                    $link->body = $request->body;
+                }
+                $link->save();
+
+                if(!$request->code) {
+                    $link->code = $link->encode(config('7ul.code-type'));
+                    $link->save();
+                }
+                return redirect()->route('manage',[$link->code, $link->password]);
             }
         } else {
-            return redirect()->route('home');
+            $link = new Link();
+            $link->url = $request->url;
+            $link->ip = $request->ip();
+            $link->password = Str::random(10);
+            $link->domain = config('7ul.domain');
+            if($request->code) {
+                $link->code = $request->code;
+            }
+            if($request->private) {
+                $link->private = $request->private;
+            }
+            if($request->type) {
+                $link->type = $request->type;
+            }
+            if($request->title) {
+                $link->title = $request->title;
+            }
+            if($request->body) {
+                $link->body = $request->body;
+            }
+            $link->save();
+
+            if(!$request->code) {
+                $link->code = $link->encode(config('7ul.code-type'));
+                $link->save();
+            }
+            return redirect()->route('manage',[$link->code, $link->password]);
         }
+
     }
 
     public function redirect($code)

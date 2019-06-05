@@ -9,26 +9,13 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <style>
-        .links > a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-    </style>
+    @yield('style')
 </head>
 <body>
     <div id="app">
@@ -66,6 +53,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -91,9 +79,9 @@
         <footer>
             <div class="container">
                 <span class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="links">
-                            <a href="#api">API</a> | <a href="#api">TOS</a> | <a href="#api">Search</a> |  <a href="#api">Powered By ShirazSoft.com</a>
+                    <div class="col-md-12">
+                        <div class="links text-center">
+                            <a href="https://shirazsoft.com">Powered By ShirazSoft.com</a>
                         </div>
                     </div>
 
@@ -102,5 +90,8 @@
         </footer>
 
     </div>
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}"></script>
+    @yield('javascript')
 </body>
 </html>

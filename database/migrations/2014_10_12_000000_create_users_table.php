@@ -20,10 +20,10 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('type')->default('user'); //user,admin
-            $table->string('api_key')->unique()->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('api_token')->unique()->nullable()->default(null);
             $table->rememberToken();
             $table->longText('data')->nullable();
             $table->timestamps();
@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
         DB::table('users')->insert([
             'name' => 'Ali Ghasemzadeh',
             'type' => 'admin',
-            'api_key' => Str::random(10),
+            'api_token' => Str::random(60),
             'email' => 'it.ghasemzadeh@gmail.com',
             'email_verified_at' => new DateTime(),
             'password' => Hash::make('p@ssw0rd'),

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="row justify-content-center" v-show="loading">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="text-center">
                     <div class="spinner-grow" style="width: 4rem; height: 4rem;" role="status">
                         <span class="sr-only">Loading...</span>
@@ -9,8 +9,9 @@
                 </div>
             </div>
         </div>
+
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         <strong>Last Links</strong>
@@ -27,31 +28,53 @@
                 </div>
             </div>
         </div>
+
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="row mt-3">
-                    <div class="col">
+                    <div class="col-md-4">
                         <div class="card text-white bg-success mb-2">
                             <div class="card-body">
-                                <h5 class="card-title">Users</h5>
-                                <p class="card-text">
-                                    {{ total_users}}</p>
+                                <div class="row">
+                                    <div class="col-md-3 col-3">
+                                        <i class="fa fa-users fa-3x"></i>
+                                    </div>
+                                    <div class="col-md-9 col-9">
+                                        <h5 class="card-title"> Users</h5>
+                                        <p class="card-text">{{ total_users}}</p>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-md-4">
                         <div class="card text-white bg-danger mb-2">
                             <div class="card-body">
-                                <h5 class="card-title">Links</h5>
-                                <p class="card-text">{{ total_links }}</p>
+                                <div class="row">
+                                    <div class="col-md-3 col-3">
+                                        <i class="fa fa-users fa-3x"></i>
+                                    </div>
+                                    <div class="col-md-9 col-9">
+                                        <h5 class="card-title"> Links</h5>
+                                        <p class="card-text">{{ total_links}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-md-4">
                         <div class="card text-white bg-dark mb-2">
                             <div class="card-body">
-                                <h5 class="card-title">Visits</h5>
-                                <p class="card-text">{{ total_visits }}</p>
+                                <div class="row">
+                                    <div class="col-md-3 col-3">
+                                        <i class="fa fa-users fa-3x"></i>
+                                    </div>
+                                    <div class="col-md-9 col-9">
+                                        <h5 class="card-title"> Visits</h5>
+                                        <p class="card-text">{{ total_visits}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -34,7 +34,6 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
-
 const app = new Vue({
     el: '#app',
 });

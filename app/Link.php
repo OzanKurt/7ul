@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Conner\Tagging\Taggable;
+use Reshadman\BijectiveShortener\BijectiveShortener;
+use Hashids\Hashids;
 
 class Link extends Model
 {
@@ -35,5 +37,39 @@ class Link extends Model
         return $query->where('private', 0);
     }
 
+    public function encode($type = 'hashids')
+    {
+        if ($type == 'hashids') {
+            $hashids  = new Hashids(config('7ul.hash-salt','7UpLink'));
+            return $hashids->encode($this->id);
+        } else if ( $type == 'bijective') {
+            BijectiveShortener::setChars(
+                config('7ul.characters','abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+            );
+            return  BijectiveShortener::makeFromInteger($this->id);
+        }
+    }
 
+    public function decode($type = 'hashids')
+    {
+        if ($type == 'hashids') {
+            $hashids  = new Hashids(config('7ul.hash-salt','7UpLink'));
+            return $hashids->decode($this->code);
+        } else if ( $type == 'bijective') {
+            BijectiveShortener::setChars(
+                config('7ul.characters','abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+            );
+            return BijectiveShortener::decodeToInteger($this->code);
+        }
+    }
+
+    public function getLinkAttribute()
+    {
+        return "{$this->domain}{$this->code}";
+    }
+
+    public function getManageAttribute()
+    {
+        return "{$this->domain}manage/{$this->code}/{$this->password}";
+    }
 }

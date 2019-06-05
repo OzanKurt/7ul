@@ -10,9 +10,11 @@
     "require": {
         "php": "^7.1.3",
         "fideloper/proxy": "^4.0",
+        "hashids/hashids": "^4.0",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
+        "maatwebsite/excel": "^3.1",
         "reshadman/bijective-shortener": "1.0",
         "rtconner/laravel-tagging": "^3.1"
     },
