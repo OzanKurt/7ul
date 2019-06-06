@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exports\LinksExport;
 use App\Link;
 use App\Visit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -19,23 +20,13 @@ class DashboardController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'admin']);
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        $links = Link::ofUser(Auth::user()->id)->orderBy('created_at', 'desc')->paginate(config('7ul.per-page',10));
-        return view('dashboard.index', ['links' => $links]);
-    }
-
-    public function export()
-    {
-        return Excel::download(new LinksExport(), date("Y-m-d'-").'links.xlsx');
+        $links = Link::orderBy('created_at', 'desc')->paginate(config('7ul.per-page',10));
+        return view('admin.dashboard.index', ['links' => $links]);
     }
 
     public function month()
@@ -48,7 +39,7 @@ class DashboardController extends Controller
             $start = Carbon::create(Carbon::now()->year, Carbon::now()->month, $i, 0);
             $end = Carbon::create(Carbon::now()->year, Carbon::now()->month, $i + 1, 0);
             $data['labels'][] = $start->format('Y-m-d');
-            $data['visits'][] = Visit::whereIn('link_id',Link::select('id')->where('user_id', auth()->user()->id)->get())->whereBetween('created_at', [$start, $end])->count();
+            $data['visits'][] = Visit::whereBetween('created_at', [$start, $end])->count();
 
         }
         return response()->json($data);

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Link;
 use App\Visit;
 use Illuminate\Http\Request;
+use GeoIp2\Database\Reader;
 
 class LinkController extends Controller
 {
@@ -53,6 +54,7 @@ class LinkController extends Controller
                     $link->code = $link->encode(config('7ul.code-type'));
                     $link->save();
                 }
+                flash(__('Done!'))->success();
                 return redirect()->route('manage',[$link->code, $link->password]);
             }
         } else {
@@ -82,6 +84,7 @@ class LinkController extends Controller
                 $link->code = $link->encode(config('7ul.code-type'));
                 $link->save();
             }
+            flash(__('Done!'))->success();
             return redirect()->route('manage',[$link->code, $link->password]);
         }
 
@@ -89,28 +92,24 @@ class LinkController extends Controller
 
     public function redirect($code)
     {
-
         if ($link = Link::whereCode($code)->first()) {
             $data = [];
-            $data['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
-            if(isset($_SERVER['HTTP_REFERER'])) {
-                $data['HTTP_REFERER'] = $_SERVER['HTTP_REFERER'];
-            }
-            $geo = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.request()->ip()));
-
             $agent = new Agent();
             $visit = new Visit();
+            $country = $this->getCountry(request()->ip());
             $visit->link_id = $link->id;
             $visit->ip = request()->ip();
             $visit->device = $agent->device();
-            $visit->country = $geo['geoplugin_countryName'];
-            $visit->country_code = $geo['geoplugin_countryCode'];
+            $visit->country = $country['country'];
+            $visit->country_code = $country['country_code'];
             $visit->platform = $agent->platform();
             $visit->platform_version = $agent->version($agent->platform());
             $visit->browser = $agent->browser();
             $visit->browser_version= $agent->version($agent->browser());
+            if(isset($_SERVER['HTTP_REFERER'])) {
+                $visit->referer = $_SERVER['HTTP_REFERER'];
+            }
             $visit->data = $data;
-            $visit->geo = $geo;
             $visit->save();
 
             if($link->type == 'redirect') {
@@ -122,6 +121,21 @@ class LinkController extends Controller
             }
         } else {
             return redirect()->route('home');
+        }
+    }
+
+    public function getCountry($ip)
+    {
+        try {
+            $reader = new Reader(storage_path('geo/GeoLite2-Country.mmdb'));
+            $record = $reader->country($ip);
+            $country = $record->country->name;
+            $country_code = $record->country->isoCode;
+            return ['country' => $country, 'country_code' => $country_code];
+        } catch (\Exception $e) {
+            $country = __('Unknown');
+            $country_code = __('Unknown');
+            return ['country' => $country, 'country_code' => $country_code];
         }
     }
 

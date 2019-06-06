@@ -17,8 +17,7 @@ class CreateVisitsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('link_id');
             $table->ipAddress('ip');
-            $table->longText('geo')->nullable();
-            $table->longText('data')->nullable();
+            $table->text('referer')->nullable();
             $table->string('country')->nullable();
             $table->string('country_code')->nullable();
             $table->string('platform')->nullable();
@@ -26,6 +25,7 @@ class CreateVisitsTable extends Migration
             $table->string('browser')->nullable();
             $table->string('browser_version')->nullable();
             $table->string('device')->nullable();
+            $table->longText('data')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

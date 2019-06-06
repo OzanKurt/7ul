@@ -7,6 +7,7 @@ use App\Link;
 use App\Visit;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class ManageController extends Controller
 {
@@ -29,6 +30,19 @@ class ManageController extends Controller
         if ($link = Link::whereCode($code)->first()) {
             if($link->password == $password) {
                 return Excel::download(new VisitsExport($link), date("Y-m-d'-").$link->id.'-visits.xlsx');
+            } else {
+                return redirect()->route('home');
+            }
+        } else {
+            return redirect()->route('home');
+        }
+    }
+
+    public function qrcode($code, $password)
+    {
+        if ($link = Link::whereCode($code)->first()) {
+            if($link->password == $password) {
+                return Excel::download(new VisitsExport($link), date("Y-m-d-").$link->id.'-visits.xlsx');
             } else {
                 return redirect()->route('home');
             }
@@ -71,8 +85,82 @@ class ManageController extends Controller
         }
     }
 
-    public function update()
+    public function country($code, $password)
     {
+        if ($link = Link::whereCode($code)->first()) {
+            if($link->password == $password) {
+                $visit_data = array();
+                $visit_labels = array();
+                $visits = Visit::select(DB::raw('COUNT(*) AS visits, country'))
+                    ->where('link_id', $link->id)
+                    ->groupBy('country')
+                    ->get();
+                foreach ($visits as $visit) {
+                    if($visit->country) {
+                        $visit_labels[] = $visit->country;
+                    } else {
+                        $visit_labels[] = __('Localhost');
+                    }
 
+                    $visit_data[] = $visit->visits;
+                }
+                return response()->json(['labels' => $visit_labels ,'data' => $visit_data]);
+            } else {
+                return redirect()->route('home');
+            }
+        } else {
+            return redirect()->route('home');
+        }
+    }
+
+    public function browser($code, $password)
+    {
+        if ($link = Link::whereCode($code)->first()) {
+            if($link->password == $password) {
+                $visit_data = array();
+                $visit_labels = array();
+                $visits = Visit::select(DB::raw('COUNT(*) AS visits, browser'))
+                    ->where('link_id', $link->id)
+                    ->groupBy('browser')
+                    ->get();
+                foreach ($visits as $visit) {
+                    $visit_labels[] = $visit->browser;
+                    $visit_data[] = $visit->visits;
+                }
+                return response()->json(['labels' => $visit_labels ,'data' => $visit_data]);
+            } else {
+                return redirect()->route('home');
+            }
+        } else {
+            return redirect()->route('home');
+        }
+    }
+
+    public function platform($code, $password)
+    {
+        if ($link = Link::whereCode($code)->first()) {
+            if($link->password == $password) {
+                $visit_data = array();
+                $visit_labels = array();
+                $visits = Visit::select(DB::raw('COUNT(*) AS visits, platform'))
+                    ->where('link_id', $link->id)
+                    ->groupBy('platform')
+                    ->get();
+                foreach ($visits as $visit) {
+                    $visit_labels[] = $visit->platform;
+                    $visit_data[] = $visit->visits;
+                }
+                return response()->json(['labels' => $visit_labels ,'data' => $visit_data]);
+            } else {
+                return redirect()->route('home');
+            }
+        } else {
+            return redirect()->route('home');
+        }
+    }
+
+    public function update(Request $request, $code, $password)
+    {
+        return false;
     }
 }

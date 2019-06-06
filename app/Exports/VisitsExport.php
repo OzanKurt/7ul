@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Visit;
+use App\Link;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
 class VisitsExport implements FromCollection

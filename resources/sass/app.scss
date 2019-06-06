@@ -2,13 +2,21 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
-@import 'variables';
+@import "variables";
+@import "~bootswatch/dist/cerulean/variables";
 
 // Icons
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~@fortawesome/fontawesome-free/scss/brands";
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
+@import "~bootswatch/dist/cerulean/bootswatch";
 
+// Plugins
+@import "~izitoast/dist/css/iziToast.css";
+@import "~select2/src/scss/core";
+
+// Customs
 @import "custom";

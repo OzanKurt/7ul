@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="container">
-
         <div class="row justify-content-center mb-3">
             <div class="col-md-12">
                 <div class="clearfix mb-2">
@@ -15,10 +14,7 @@
                 @endif
                 <div class="card">
                     <div class="card-header">
-                        <div class="clearfix">
                             <i class="fa fa-list"></i> {{ __('Links') }}
-                            <a href="{{ route('dashboard.export') }}" class="float-right"><i class="fa fa-file-excel"></i></a>
-                        </div>
                     </div>
 
                     <ul class="list-group list-group-flush">
@@ -41,7 +37,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row justify-content-center">
             <div class="col-md-12 mb-3">
                 <div class="card">
@@ -58,7 +53,7 @@
         $( document ).ready(function() {
 
 
-            axios.get('{{ route('dashboard.month') }}').then(function(response) {
+            axios.get('{{ route('admin.dashboard.month') }}').then(function(response) {
                 var monthChart = $('#monthChart');
                 new Chart(monthChart, {
                     type: 'bar',

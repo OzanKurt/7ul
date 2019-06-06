@@ -64,7 +64,7 @@
                                         <label class="btn btn-sm btn-secondary">
                                             <input type="radio" name="private" value="1" id="privateNo"> {{ __('Private') }}
                                         </label>
-                                        <label class="btn btn-sm btn-secondary">
+                                        <label class="btn btn-sm btn-secondary active">
                                             <input type="radio" checked name="private" value="0" id="privateYes"> {{ __('Public') }}
                                         </label>
                                     </div>

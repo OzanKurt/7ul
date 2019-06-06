@@ -7,9 +7,10 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-window.VeeValidate = require('vee-validate');
-
-Vue.use(VeeValidate);
+window.Chart = require('chart.js');
+import 'chartjs-plugin-colorschemes';
+window.iziToast = require('iziToast');
+window.select2 = require('select2');
 
 /**
  * The following block of code may be used to automatically register your
@@ -30,11 +31,15 @@ Vue.component('last-links-component', require('./components/LastLinksComponent.v
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-});
 
 const app = new Vue({
     el: '#app',
 });
 
+$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $(".tags").select2({
+        tags: true,
+        tokenSeparators: [',']
+    });
+});
