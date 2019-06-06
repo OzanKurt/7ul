@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="text-center">
-                    <img src="{{ asset('img/logo.png') }}" class="mx-auto" />
+                    <img src="{{ asset('images/logo.png') }}" class="mx-auto" />
                 </div>
             </div>
         </div>
